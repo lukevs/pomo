@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "pomo"
+version = "0.1.0"
+description = "vim pomodoro tool"
+authors = ["Luke Van Seters <lukevanseters@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+pomo = 'pomo.main:main'

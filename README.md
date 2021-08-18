@@ -1,4 +1,4 @@
-# pomo
+# pomo 🍅
 
 > A small pomodoro + vim tool
 

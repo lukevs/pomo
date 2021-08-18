@@ -1,20 +1,3 @@
-"""
-Create a new day doc from 8:30 AM to 5 PM:
-pomo 8.5 5
-
-Open your existing day's doc
-pomo
-
-View your pomo from 3 days ago
-pomo -m 3
-
-View your week goals, or create a new one for this week
-pomo -w
-
-View your global list of tasks
-pomo -l
-"""
-
 import os
 from datetime import datetime, timedelta
 from pathlib import Path

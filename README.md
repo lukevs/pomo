@@ -2,6 +2,61 @@
 
 > A small pomodoro + vim tool
 
+```
+2021-08-18
+
+Goals:
+- ✅ Finish database
+- Call back Steve
+- Create new blog site
+  - ✅ Research Gatsby v. NextJS
+  - Find a template
+  - Create the site
+  - Deploy
+  - Write first post
+
+
+9:00 - 5:00
+
+Planning
+-
+
+✅ Work on database
+-
+
+✅ Research Gatsby v. NextJS
+-
+
+📌 Call back Steve
+-
+
+🥪 Lunch
+-
+
+Find a template
+-
+-
+
+Create the site
+-
+-
+
+Deploy
+-
+
+Write first post
+-
+-
+
+Free time
+-
+-
+-
+-
+```
+
+## Usage
+
 Create a new day doc from 8:30 AM to 5 PM:
 ```
 pomo 8.5 5

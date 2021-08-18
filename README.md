@@ -2,17 +2,12 @@
 
 > A small pomodoro + vim tool
 
-Example day where each pomo
-
-
-## Usage
-
 Create a new day doc from 8:30 AM to 5 PM:
 ```
 pomo 8.5 5
 ```
 
-...which creates a file with a dash for each pomodoro:
+which opens a file in vim with a dash for each pomodoro:
 ```
 2021-08-18
 

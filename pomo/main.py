@@ -6,7 +6,7 @@ from typing import Optional
 import typer
 
 
-POMO_DIR = Path.home() / ".pomo"
+POMO_DIRECTORY = Path.home() / ".pomo"
 
 WEEKLY_TEMPLATE = """Goals:
 
@@ -43,13 +43,13 @@ def build_doc(today: datetime, start: float, end: float) -> str:
 
 
 def handle_list() -> None:
-    vim_open(POMO_DIR / 'list.txt')
+    vim_open(POMO_DIRECTORY / 'list.txt')
 
 
 def handle_week() -> None:
     today = datetime.now().date()
     monday_of_the_week = today - timedelta(days=today.weekday())
-    filepath = POMO_DIR / 'week-{}.txt'.format(str(monday_of_the_week))
+    filepath = POMO_DIRECTORY / 'week-{}.txt'.format(str(monday_of_the_week))
 
     if not filepath.is_file():
         make_week_doc(filepath)
@@ -89,7 +89,7 @@ def handle_day(start: Optional[float], end: Optional[float]) -> None:
 
 
 def get_day_path(day: datetime) -> Path:
-    return POMO_DIR / '{}.txt'.format(day)
+    return POMO_DIRECTORY / '{}.txt'.format(day)
 
 
 def vim_open(filepath: Path) -> None:
@@ -104,8 +104,8 @@ def main(
     week: bool = typer.Option(False, "--week", "-w"),
     minus_days: int = typer.Option(0, "--minus", "-m"),
 ):
-    if not POMO_DIR.is_dir():
-        POMO_DIR.mkdir()
+    if not POMO_DIRECTORY.is_dir():
+        POMO_DIRECTORY.mkdir()
 
     if list:
         handle_list()

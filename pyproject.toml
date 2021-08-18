@@ -7,6 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+typer = "^0.3.2"
 
 [tool.poetry.dev-dependencies]
 
@@ -15,4 +16,4 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-pomo = 'pomo.main:main'
+pomo = 'pomo.main:app'

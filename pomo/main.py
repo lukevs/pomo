@@ -16,9 +16,12 @@ pomo -l
 """
 
 import os
-import sys
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Optional
+
+import typer
+
 
 POMO_DIR = Path.home() / ".pomo"
 
@@ -36,7 +39,11 @@ Goals:
 {}
 """
 
-def make_doc(filename, today, start, end):
+
+app = typer.Typer()
+
+
+def make_doc(filepath: Path, today: datetime, start: float, end: float):
     real_end = end
 
     if end < start:
@@ -49,60 +56,52 @@ def make_doc(filename, today, start, end):
     start_time = str(start).replace('.0', ':00').replace('.5', ':30')
     end_time = str(end).replace('.0', ':00').replace('.5', ':30')
 
-    with open(filename, 'w') as f:
+    with filepath.open("w") as f:
         f.write(TEMPLATE.format(today, start_time, end_time, body))
 
 
-def make_week_doc(filename):
-    with open(filename, 'w') as f:
+def make_week_doc(filepath: Path) -> None:
+    with filepath.open("w") as f:
         f.write(WEEKLY_TEMPLATE)
 
 
-def main():
-    if not os.path.isdir(POMO_DIR):
-        os.mkdir(POMO_DIR)
+def vim_open(filepath: Path) -> None:
+    os.system('vim ' + str(filepath))
 
-    if len(sys.argv) == 2 and sys.argv[1] == '-l':
-        today = datetime.now().date()
+
+@app.command()
+def main(
+    start: Optional[float] = typer.Option(None, "--start"),
+    end: Optional[float] = typer.Option(None, "--end"),
+    week: bool = typer.Option(False, "--week", "-w"),
+    list: bool = typer.Option(False, "--list", "-l"),
+):
+    if not POMO_DIR.is_dir():
+        POMO_DIR.mkdir()
+
+    today = datetime.now().date()
+
+    if list:
         monday_of_the_week = today - timedelta(days=today.weekday())
-        filename = POMO_DIR / 'list.txt'
-        os.system('vim ' + str(filename))
+        vim_open(POMO_DIR / 'list.txt')
 
-    elif len(sys.argv) == 2 and sys.argv[1] == '-w':
-        today = datetime.now().date()
+    elif week:
         monday_of_the_week = today - timedelta(days=today.weekday())
-        filename = POMO_DIR / 'week-{}.txt'.format(str(monday_of_the_week))
+        filepath = POMO_DIR / 'week-{}.txt'.format(str(monday_of_the_week))
 
-        if not os.path.isfile(filename):
-            make_week_doc(filename)
+        if not filepath.is_file():
+            make_week_doc(filepath)
 
-        os.system('vim ' + str(filename))
-
-    elif len(sys.argv) == 3 and sys.argv[1] == '-m':
-        day = str(datetime.now().date() - timedelta(days=int(sys.argv[2])))
-        filename = POMO_DIR / '{}.txt'.format(day)
-
-        if not os.path.isfile(filename):
-            print('No pomo found for {}'.format(day))
-        else:
-            os.system('vim ' + str(filename))
+        vim_open(filepath)
 
     else:
-        today = str(datetime.now().date())
-        filename = POMO_DIR / '{}.txt'.format(today)
+        filepath = POMO_DIR / '{}.txt'.format(today)
 
-        if not os.path.isfile(filename):
-            if len(sys.argv) < 3:
-                print("start and end are required for new days")
+        if not filepath.is_file():
+            if start is None or end is None:
+                typer.echo("start and end are required for new days")
                 sys.exit(1)
 
-            start = float(sys.argv[1])
-            end = float(sys.argv[2])
+            make_doc(filepath, today, start, end)
 
-            make_doc(filename, today, start, end)
-
-        os.system('vim ' + str(filename))
-
-
-if __name__ == "__main__":
-    main()
+        vim_open(filepath)

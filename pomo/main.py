@@ -43,7 +43,7 @@ Goals:
 app = typer.Typer()
 
 
-def make_doc(filepath: Path, today: datetime, start: float, end: float):
+def build_doc(today: datetime, start: float, end: float) -> str:
     real_end = end
 
     if end < start:
@@ -56,13 +56,42 @@ def make_doc(filepath: Path, today: datetime, start: float, end: float):
     start_time = str(start).replace('.0', ':00').replace('.5', ':30')
     end_time = str(end).replace('.0', ':00').replace('.5', ':30')
 
-    with filepath.open("w") as f:
-        f.write(TEMPLATE.format(today, start_time, end_time, body))
+    return TEMPLATE.format(today, start_time, end_time, body)
 
 
-def make_week_doc(filepath: Path) -> None:
+def handle_list() -> None:
+    vim_open(POMO_DIR / 'list.txt')
+
+
+def handle_week() -> None:
+    today = datetime.now().date()
+    monday_of_the_week = today - timedelta(days=today.weekday())
+    filepath = POMO_DIR / 'week-{}.txt'.format(str(monday_of_the_week))
+
+    if not filepath.is_file():
+        make_week_doc(filepath)
+
     with filepath.open("w") as f:
         f.write(WEEKLY_TEMPLATE)
+
+    vim_open(filepath)
+
+
+def handle_day(start: Optional[float], end: Optional[float]) -> None:
+    today = datetime.now().date()
+    filepath = POMO_DIR / '{}.txt'.format(today)
+
+    if not filepath.is_file():
+        if start is None or end is None:
+            typer.echo("start and end are required for new days")
+            sys.exit(1)
+
+        doc_content = build_doc(today, start, end)
+
+        with filepath.open("w") as f:
+            f.write(doc_content)
+
+    vim_open(filepath)
 
 
 def vim_open(filepath: Path) -> None:
@@ -71,37 +100,17 @@ def vim_open(filepath: Path) -> None:
 
 @app.command()
 def main(
-    start: Optional[float] = typer.Option(None, "--start"),
-    end: Optional[float] = typer.Option(None, "--end"),
+    start: Optional[float] = typer.Argument(None),
+    end: Optional[float] = typer.Argument(None),
     week: bool = typer.Option(False, "--week", "-w"),
     list: bool = typer.Option(False, "--list", "-l"),
 ):
     if not POMO_DIR.is_dir():
         POMO_DIR.mkdir()
 
-    today = datetime.now().date()
-
     if list:
-        monday_of_the_week = today - timedelta(days=today.weekday())
-        vim_open(POMO_DIR / 'list.txt')
-
+        handle_list()
     elif week:
-        monday_of_the_week = today - timedelta(days=today.weekday())
-        filepath = POMO_DIR / 'week-{}.txt'.format(str(monday_of_the_week))
-
-        if not filepath.is_file():
-            make_week_doc(filepath)
-
-        vim_open(filepath)
-
+        handle_week()
     else:
-        filepath = POMO_DIR / '{}.txt'.format(today)
-
-        if not filepath.is_file():
-            if start is None or end is None:
-                typer.echo("start and end are required for new days")
-                sys.exit(1)
-
-            make_doc(filepath, today, start, end)
-
-        vim_open(filepath)
+        handle_day(start, end)

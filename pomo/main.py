@@ -77,14 +77,25 @@ def handle_week() -> None:
     vim_open(filepath)
 
 
+def handle_minus(minus_days: int) -> None:
+    day = datetime.now().date() - timedelta(days=minus_days)
+    filepath = get_day_path(day)
+
+    if not filepath.is_file():
+        typer.echo(f"No pomo found for {day}")
+        raise typer.Abort()
+
+    vim_open(filepath)
+
+
 def handle_day(start: Optional[float], end: Optional[float]) -> None:
     today = datetime.now().date()
-    filepath = POMO_DIR / '{}.txt'.format(today)
+    filepath = get_day_path(today)
 
     if not filepath.is_file():
         if start is None or end is None:
             typer.echo("start and end are required for new days")
-            sys.exit(1)
+            raise typer.Abort()
 
         doc_content = build_doc(today, start, end)
 
@@ -92,6 +103,10 @@ def handle_day(start: Optional[float], end: Optional[float]) -> None:
             f.write(doc_content)
 
     vim_open(filepath)
+
+
+def get_day_path(day: datetime) -> Path:
+    return POMO_DIR / '{}.txt'.format(day)
 
 
 def vim_open(filepath: Path) -> None:
@@ -102,8 +117,9 @@ def vim_open(filepath: Path) -> None:
 def main(
     start: Optional[float] = typer.Argument(None),
     end: Optional[float] = typer.Argument(None),
-    week: bool = typer.Option(False, "--week", "-w"),
     list: bool = typer.Option(False, "--list", "-l"),
+    week: bool = typer.Option(False, "--week", "-w"),
+    minus_days: int = typer.Option(0, "--minus", "-m"),
 ):
     if not POMO_DIR.is_dir():
         POMO_DIR.mkdir()
@@ -112,5 +128,7 @@ def main(
         handle_list()
     elif week:
         handle_week()
+    elif minus_days != 0:
+        handle_minus(minus_days)
     else:
         handle_day(start, end)

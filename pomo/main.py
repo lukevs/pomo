@@ -52,10 +52,8 @@ def handle_week() -> None:
     filepath = POMO_DIRECTORY / 'week-{}.txt'.format(str(monday_of_the_week))
 
     if not filepath.is_file():
-        make_week_doc(filepath)
-
-    with filepath.open("w") as f:
-        f.write(WEEKLY_TEMPLATE)
+        with filepath.open("w") as f:
+            f.write(WEEKLY_TEMPLATE)
 
     vim_open(filepath)
 

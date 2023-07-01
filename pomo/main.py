@@ -8,13 +8,13 @@ import typer
 
 POMO_DIRECTORY = Path.home() / ".pomo"
 
-WEEKLY_TEMPLATE = """Goals:
+WEEKLY_TEMPLATE = """THIS WEEK WOULD BE A BIG WIN IF:
 
 """
 
 TEMPLATE = """{}
 
-Goals:
+TODAY WOULD BE A BIG WIN IF:
 
 
 {} - {}

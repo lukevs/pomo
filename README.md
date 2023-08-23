@@ -24,7 +24,7 @@ Planning
 ✅ Work on database
 -
 
-✅ Research Gatsby v. NextJS
+✅ Update SSR
 -
 
 📌 Call back Steve

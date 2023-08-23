@@ -9,7 +9,7 @@ Goals:
 - ✅ Finish database
 - Call back Steve
 - Create new blog site
-  - ✅ Research Gatsby v. NextJS
+  - ✅ Update SSR
   - Find a template
   - Create the site
   - Deploy
